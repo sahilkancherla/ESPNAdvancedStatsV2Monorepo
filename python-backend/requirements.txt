@@ -17,7 +17,6 @@ idna==3.10
 
 # Web scraping
 beautifulsoup4==4.13.4
-soupsieve==2.7
 
 # Sports data APIs
 espn-api==0.45.1
@@ -25,11 +24,6 @@ nfl_data_py==0.3.3
 
 # Database/Supabase
 supabase==2.6.0
-postgrest==1.1.1
-gotrue==2.12.3
-realtime==2.7.0
-storage3==0.12.1
-supafunc==0.10.1
 
 # OpenAI/LangChain
 openai==1.99.9
@@ -37,7 +31,6 @@ langchain==0.3.27
 langchain-core==0.3.74
 langchain-openai==0.3.30
 langchain-text-splitters==0.3.9
-tiktoken==0.11.0
 
 # Data validation
 pydantic==2.11.7
@@ -45,13 +38,3 @@ pydantic_core==2.33.2
 
 # Configuration
 python-dotenv==1.1.1
-PyYAML==6.0.2
-
-# Utilities
-MarkupSafe==3.0.2
-Jinja2==3.1.6
-itsdangerous==2.2.0
-blinker==1.9.0
-six==1.17.0
-typing_extensions==4.14.1
-packaging==25.0
