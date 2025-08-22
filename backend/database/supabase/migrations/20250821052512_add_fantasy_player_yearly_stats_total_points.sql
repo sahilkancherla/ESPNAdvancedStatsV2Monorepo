@@ -1,0 +1,1 @@
+ALTER TABLE fantasy_player_season_stats ADD COLUMN total_points INTEGER DEFAULT 0;

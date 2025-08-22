@@ -1,0 +1,1 @@
+ALTER TABLE fantasy_player_season_stats ALTER COLUMN total_points TYPE NUMERIC(10, 2);

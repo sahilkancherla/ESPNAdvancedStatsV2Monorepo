@@ -1,0 +1,10 @@
+{
+  "timestamp": 1755457556.633992,
+  "url": "https://fantasy.espn.com/football/draft?leagueId=35762077&seasonId=2025&teamId=2&memberId=%7B864C6648-6746-42D3-A0D2-C2041D50FADD%7D",
+  "teams": [],
+  "picks": [],
+  "available_players": [],
+  "draft_settings": {},
+  "page_title": "",
+  "page_content": "typeof module===\"object\" && Object.defineProperty(module, \"exports\", { set: function(){} });__KONA_SERIALIZATION_DATA__={}\n          __NEXT_DATA__ = {\"props\":{\"pageProps\":{\"browser\":\"other\",\"country\":\"us\",\"device\":\"pc\",\"hostname\":\"fantasy.espn.com\",\"initialNow\":1755457274425,\"isPremium\":false,\"region\":\"ccpa\",\"tms\":{\"enabled\":true,\"env\":\"dev\",\"tag\":\"https://dcf.espn.com/TWDC-DTCI/prod/Bootstrap.js\",\"tagNS\":\"Bootstrapper\",\"emitEvent\":\"tms:ready\",\"cmpLoaded\":false},\"userAB\":\"none\"}},\"page\":\"/football/draft\",\"pathname\":\"/football/draft\",\"query\":{},\"buildId\":\"8111a03e-ca65-4d0b-9e99-09b1e890b432\",\"assetPrefix\":\"//cdn1.espn.net/kona/e3f58c560fb0-1.301\",\"nextExport\":false,\"err\":null,\"chunks\":[]}\n          module={}\n          __NEXT_LOADED_PAGES__ = []\n          __NEXT_LOADED_CHUNKS__ = []\n\n          __NEXT_REGISTER_PAGE = function (route, fn) {\n            __NEXT_LOADED_PAGES__.push({ route: route, fn: fn })\n          }\n\n          __NEXT_REGISTER_CHUNK = function (chunkName, fn) {\n            __NEXT_LOADED_CHUNKS__.push({ chunkName: chunkName, fn: fn })\n          }\n\n          false\n        "
+}

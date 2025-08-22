@@ -1,0 +1,3 @@
+ALTER TABLE nfl_teams 
+RENAME COLUMN the_huddle_overall_ranking TO the_huddle_overall_offensive_line_ranking;
+

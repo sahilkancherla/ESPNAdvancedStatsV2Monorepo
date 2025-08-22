@@ -1,0 +1,1 @@
+alter table big_board add column year integer not null default 2025;

@@ -1,0 +1,1 @@
+ALTER TABLE fantasy_league_draft_picks ADD COLUMN year INTEGER DEFAULT 2024;
