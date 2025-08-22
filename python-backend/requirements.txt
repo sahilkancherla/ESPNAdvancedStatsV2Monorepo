@@ -1,10 +1,10 @@
-# Core Flask
-Flask==3.1.1
+# Core Flask (Python 3.8 compatible)
+Flask==3.0.3
 flask-cors==6.0.1
-Werkzeug==3.1.3
+Werkzeug==3.0.4
 
 # Data processing (keeping as requested)
-numpy==1.26.4
+numpy==1.24.4
 pandas==1.5.3
 python-dateutil==2.9.0.post0
 pytz==2025.2
