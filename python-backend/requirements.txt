@@ -1,6 +1,6 @@
 # Core Flask (Python 3.8 compatible)
 Flask==3.0.3
-flask-cors==6.0.1
+flask-cors==5.0.0
 Werkzeug==3.0.4
 
 # Data processing (keeping as requested)
