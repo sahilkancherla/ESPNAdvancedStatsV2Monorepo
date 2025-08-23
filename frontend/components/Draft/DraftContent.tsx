@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
-import { useState } from 'react'
+import { useState, JSX } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Badge } from '@/components/ui/badge'
@@ -13,18 +16,18 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs'
 import { BigBoard } from './BigBoard'
 import { MockDrafts } from './Mocks'
 
+
 export function DraftAnalysisContent() {
   const {fantasyDraftPicks, fantasyTeams, fantasyPlayersSeasonStats} = useFantasyData()
   const {nflPlayers, nflTeams} = useNFLData()
 
 
-  const getFantasyPlayerTotalSeasonPoints = (playerId: string) => {
+  const getFantasyPlayerTotalSeasonPoints = (playerId: string): number | undefined => {
     const playerSeasonStats = fantasyPlayersSeasonStats.find(stat => stat.player_id === playerId)
     return playerSeasonStats?.total_points
   }
-  
 
-  const draftData = []
+  const draftData: any[] = []
   for (const draftPick of fantasyDraftPicks) {
     const player = nflPlayers.find(player => player.id === draftPick.player_id)
     const fantasyTeam = fantasyTeams.find(team => team.id === draftPick.team_id)
@@ -116,9 +119,8 @@ export function DraftAnalysisContent() {
     }
   }
 
+  const getRankDifferenceBadgeStyle = (rankDifference: number): JSX.Element | null => {
 
-
-  const getRankDifferenceBadgeStyle = (rankDifference: number) => {
     if (Math.abs(rankDifference) < 3) {
       return <Badge style={{ backgroundColor: '#6b7280', color: 'white' }}>Even</Badge>
     } else if (rankDifference >= 3 && rankDifference < 5) {
@@ -136,6 +138,7 @@ export function DraftAnalysisContent() {
     } else if (rankDifference <= -10) {
       return <Badge style={{ backgroundColor: '#dc2626', color: 'white' }}>Major Bust</Badge>
     }
+    return null;
   }
 
   return (

@@ -5,7 +5,7 @@ import { BigBoardPlayer } from '@/lib/interfaces'
 import { Badge } from '@/components/ui/badge'
 import { Check, X, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import { PLAYER_LABELS, getLabelConfig, getLabelColor } from "@/lib/utils";
+import { getLabelConfig, getLabelColor } from "@/lib/utils";
 import {
   HoverCard,
   HoverCardContent,
@@ -14,7 +14,6 @@ import {
 
 interface DraftComponentProps {
   bigBoardPlayer: BigBoardPlayer
-  idx: number
   onDraftToggle?: (playerId: string, isDrafted: boolean) => void
 }
 
@@ -38,7 +37,6 @@ function shortenName(firstName: string, lastName: string, maxLength: number) {
 
 export default function NFLPlayerComponent({ 
   bigBoardPlayer, 
-  idx, 
   onDraftToggle 
 }: DraftComponentProps) {
   const [isDrafted, setIsDrafted] = useState(bigBoardPlayer.drafted || false)
@@ -88,12 +86,12 @@ export default function NFLPlayerComponent({
                     </span>
                   </div>
                 </div>
-                <div className={cn(
+                {/* <div className={cn(
                   "text-[10px] truncate transition-colors",
                   isDrafted ? "text-muted-foreground/60" : "text-muted-foreground"
                 )}>
                   {bigBoardPlayer.team_abbrev}
-                </div>
+                </div> */}
               </div>
 
               {/* Draft Status & Actions */}
@@ -175,12 +173,12 @@ export default function NFLPlayerComponent({
                 {displayName}
               </span>
             </div>
-            <div className={cn(
+            {/* <div className={cn(
               "text-[10px] truncate transition-colors",
               isDrafted ? "text-muted-foreground/60" : "text-muted-foreground"
             )}>
               {bigBoardPlayer.team_abbrev}
-            </div>
+            </div> */}
           </div>
 
           {/* Draft Status & Actions */}

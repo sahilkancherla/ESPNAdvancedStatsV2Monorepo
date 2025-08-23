@@ -18,7 +18,7 @@ export function LeagueMedianContent() {
 
   const { selectedLeagueId, leagues } = useLeagueTeamData();
   const selectedLeague = leagues.find(league => league.id === selectedLeagueId);
-  const selectedLeagueTeamsIds = selectedLeague?.teams.map(team => team.id);
+  const selectedLeagueTeamsIds = selectedLeague?.teams.map((team: { id: string }) => team.id);
   const myTeam = selectedLeague?.teams.find(team => team.id === selectedLeague?.teamId);
   const myTeamId = myTeam?.id;
 
@@ -335,7 +335,7 @@ export function LeagueMedianContent() {
               <p className="font-medium">No teams selected for median calculation</p>
             </div>
             <p className="text-sm text-amber-700 mt-1">
-              Please select at least one team using the "Teams" button above to calculate the league median.
+              Please select at least one team using the &quot;Teams&quot; button above to calculate the league median.
             </p>
           </CardContent>
         </Card>

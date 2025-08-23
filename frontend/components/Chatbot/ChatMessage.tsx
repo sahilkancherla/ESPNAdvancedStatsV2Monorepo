@@ -25,9 +25,9 @@ export const ChatMessage = ({ message, sources, follow_up_questions, verified_so
     
   const renderMessageWithSources = (text: string) => {
     // Regular expression to find source references like [1], [2], etc.
-    const sourceRegex = /\[\((\d+)\)\]/g;
-    // Regular expression to find bold text **text**
-    const boldRegex = /\*\*(.*?)\*\*/g;
+    // const sourceRegex = /\[\((\d+)\)\]/g;
+    // // Regular expression to find bold text **text**
+    // const boldRegex = /\*\*(.*?)\*\*/g;
     
     const processedText = text;
     const parts: React.ReactNode[] = [];

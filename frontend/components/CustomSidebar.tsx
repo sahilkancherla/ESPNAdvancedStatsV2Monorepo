@@ -8,7 +8,6 @@ import {
   BarChart3,
   Search,
   MessageCircle,
-  Plus,
 } from "lucide-react"
 
 import {

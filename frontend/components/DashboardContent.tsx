@@ -22,7 +22,7 @@ export function DashboardContent({
 
   const handleLeagueChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const leagueId = event.target.value;
-    setSelectedLeagueId(leagueId || null);
+    setSelectedLeagueId(leagueId);
   };
 
   return (

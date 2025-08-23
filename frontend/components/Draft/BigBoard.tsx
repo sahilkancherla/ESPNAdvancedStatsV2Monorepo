@@ -1,10 +1,10 @@
 'use client'
 import React, { useState, useCallback, useEffect } from 'react'
-import { NFLPlayer, BigBoardPlayer } from '@/lib/interfaces'
+import { BigBoardPlayer } from '@/lib/interfaces'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Badge } from '@/components/ui/badge'
-import { EditBigBoardModal } from './EditBigBoardModal'
+import { EditBigBoardModal } from '@/components/Draft/EditBigBoardModal'
 import { Button } from '@/components/ui/button'
 import BigBoardPlayerComponent from './BigBoardPlayer'
 import { Edit } from "lucide-react"
@@ -16,7 +16,7 @@ const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const positionsOrder = ['QB', 'RB', 'WR', 'TE', 'K', 'D/ST']
 
 export function BigBoard() {
-  const { nflPlayers, nflTeams } = useNFLData()
+  const { nflPlayers } = useNFLData()
   const { selectedLeagueId, leagues } = useLeagueTeamData()
   const selectedLeague = leagues.find(league => league.id === selectedLeagueId);
   const teamId = selectedLeague?.teamId;
@@ -27,13 +27,13 @@ export function BigBoard() {
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState("by-position")
 
-  const [visiblePositions, setVisiblePositions] = useState<string[]>(positionsOrder)
+  // const [visiblePositions, setVisiblePositions] = useState<string[]>(positionsOrder)
 
-  const togglePosition = (pos: string) => {
-    setVisiblePositions(prev =>
-      prev.includes(pos) ? prev.filter(p => p !== pos) : [...prev, pos]
-    )
-  }
+  // const togglePosition = (pos: string) => {
+  //   setVisiblePositions(prev =>
+  //     prev.includes(pos) ? prev.filter(p => p !== pos) : [...prev, pos]
+  //   )
+  // }
   
   const handleModalClose = () => {
     setIsOpen(false)
@@ -67,7 +67,7 @@ export function BigBoard() {
       if (data.nflPlayers && Array.isArray(data.nflPlayers)) {
         // Sort and limit players
         const sortedPlayers = data.nflPlayers
-          .sort((a: any, b: any) => (a.rank || 0) - (b.rank || 0))
+          .sort((a: BigBoardPlayer, b: BigBoardPlayer) => (a.rank || 0) - (b.rank || 0))
           .slice(0, 250)
 
         const nflBigBoardPlayers: BigBoardPlayer[] = []
@@ -98,7 +98,7 @@ export function BigBoard() {
     } finally {
       setLoading(false)
     }
-  }, [teamId, nflPlayers, BACKEND_URL])
+  }, [teamId, nflPlayers])
 
   useEffect(() => {
     if (teamId && nflPlayers.length > 0) {
@@ -195,7 +195,7 @@ export function BigBoard() {
           <EditBigBoardModal
             isOpen={isOpen}
             onClose={handleModalClose}
-            teamId={teamId}
+            teamId={teamId as string}
             nflPlayers={nflPlayers}
             bigBoard={bigBoard}
           />
@@ -233,7 +233,6 @@ export function BigBoard() {
                                 <div className="min-w-0 flex-1">
                                   <BigBoardPlayerComponent 
                                     bigBoardPlayer={p} 
-                                    idx={idx + 1} 
                                     onDraftToggle={onDraftToggle} 
                                   />
                                 </div>
@@ -262,7 +261,6 @@ export function BigBoard() {
                         <div className="min-w-0 flex-1">
                           <BigBoardPlayerComponent 
                             bigBoardPlayer={player} 
-                            idx={idx + 1} 
                             onDraftToggle={onDraftToggle} 
                           />
                         </div>

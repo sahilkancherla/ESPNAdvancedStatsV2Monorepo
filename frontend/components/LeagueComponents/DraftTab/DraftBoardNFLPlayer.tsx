@@ -1,7 +1,6 @@
 'use client'
 
 import React from 'react'
-import { DraftPick } from '@/lib/interfaces'
 import { Badge } from '@/components/ui/badge'
 
 interface DraftComponentProps {

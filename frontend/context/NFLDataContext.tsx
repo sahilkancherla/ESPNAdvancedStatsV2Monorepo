@@ -1,6 +1,7 @@
 // context/NFLDataContext.tsx
 import { getNFLTeams, getNFLPlayers, getNFLSchedule, getNFLPlayerWeeklyStats, getNFLPlayerSeasonStats, getNFLTeamWeeklyStats, getNFLTeamSeasonStats } from "@/lib/nflData";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { NFLTeam, NFLPlayer, NFLGame, NFLPlayerWeeklyStats, NFLPlayerSeasonStats, NFLTeamWeeklyStats, NFLTeamSeasonStats } from "@/lib/interfaces";
 
 type NFLData = {
   nflTeams: NFLTeam[];

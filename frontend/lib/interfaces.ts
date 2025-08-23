@@ -1,4 +1,4 @@
-interface League {
+export interface League {
     id: string
     teamId: string // the id of my team in this league
     adminUserId: string
@@ -8,14 +8,14 @@ interface League {
     teams: LeagueTeam[]
 }
 
-interface LeagueTeam {
+export interface LeagueTeam {
     id: string
     team_name: string
     team_abbrev: string
     espn_team_id: number
 }
 
-interface NFLPlayer {
+export interface NFLPlayer {
     id: string
     espn_player_id: number
     adp_std: number // average draft position standard league
@@ -32,7 +32,7 @@ interface NFLPlayer {
     // weekly_stats_this_season: NFLPlayerWeeklyStats[]
 }
 
-interface NFLPlayerWeeklyStats {
+export interface NFLPlayerWeeklyStats {
     id: string
     player_id: string
     game_id: string
@@ -74,7 +74,7 @@ interface NFLPlayerWeeklyStats {
     updated_at: string
 }
 
-interface NFLPlayerSeasonStats {
+export interface NFLPlayerSeasonStats {
     id: string
     player_id: string
     year: number
@@ -113,7 +113,7 @@ interface NFLPlayerSeasonStats {
     updated_at: string
 }
 
-interface NFLTeam {
+export interface NFLTeam {
     id: string
     espn_team_id: number
     team_name: string
@@ -133,20 +133,20 @@ interface NFLTeam {
     schedule: NFLGame[]
 }
 
-interface NFLTeamWeeklyStats {
+export interface NFLTeamWeeklyStats {
     id: string
     team_id: string
     week: number
     year: number
 }
 
-interface NFLTeamSeasonStats {
+export interface NFLTeamSeasonStats {
     id: string
     team_id: string
     year: number
 }
 
-interface NFLGame {
+export interface NFLGame {
     id: string
     week: number
     year: number
@@ -154,7 +154,7 @@ interface NFLGame {
     away_team_id: string
 }
 
-interface FantasyTeam {
+export interface FantasyTeam {
     id: string;
     user_id: string | null;
     league_id: string;
@@ -163,7 +163,7 @@ interface FantasyTeam {
     team_abbrev: string;
 }
 
-interface FantasyTeamWeeklyStats {
+export interface FantasyTeamWeeklyStats {
     id: string;
     league_id: string;
     team_id: string;
@@ -178,7 +178,8 @@ interface FantasyTeamWeeklyStats {
     updated_at: string;
     projected_points: number;
 }
-interface FantasyTeamSeasonStats {
+
+export interface FantasyTeamSeasonStats {
     id: string;
     league_id: string;
     team_id: string;
@@ -191,7 +192,8 @@ interface FantasyTeamSeasonStats {
     created_at: string;
     updated_at: string;
 }
-interface FantasyPlayerWeeklyStats {
+
+export interface FantasyPlayerWeeklyStats {
     id: string;
     player_id: string;
     game_id: string | null;
@@ -205,7 +207,8 @@ interface FantasyPlayerWeeklyStats {
     league_id: string;
     slot: string | null;
 }
-interface FantasyPlayerSeasonStats {
+
+export interface FantasyPlayerSeasonStats {
     id: string;
     player_id: string;
     year: number;
@@ -220,7 +223,7 @@ interface FantasyPlayerSeasonStats {
     league_id: string;
 }
 
-interface FantasyDraftPick {
+export interface FantasyDraftPick {
     id: string;
     league_id: string;
     team_id: string;
@@ -229,7 +232,7 @@ interface FantasyDraftPick {
     pick_number: number;
 }
 
-interface BigBoardPlayer extends NFLPlayer {
+export interface BigBoardPlayer extends NFLPlayer {
     big_board_id: string;
     rank: number;
     tier: number;
@@ -238,7 +241,7 @@ interface BigBoardPlayer extends NFLPlayer {
     drafted: boolean;
 }
 
-interface DraftPick extends NFLPlayer{
+export interface DraftPick extends NFLPlayer{
     drafted_team_id: string
     drafted_team_name: string
     drafted_team_abbrev: string
@@ -246,13 +249,13 @@ interface DraftPick extends NFLPlayer{
     slot: string | null
 }
 
-interface DraftPosition {
+export interface DraftPosition {
     id: string
     team_id: string
     pick_number: number
 }
 
-interface FantasyMockDraft {
+export interface FantasyMockDraft {
     id: string
     league_id: string
     team_id: string
@@ -263,7 +266,7 @@ interface FantasyMockDraft {
     updated_at: string
 }
 
-interface FantasyMockDraftPick {
+export interface FantasyMockDraftPick {
     id: string
     fantasy_mock_draft_id: string
     round_number: number
@@ -272,4 +275,21 @@ interface FantasyMockDraftPick {
     drafting_team_id: string
     player_id: string
     notes: string
+}
+
+export interface Message {
+    id: string;
+    text: string;
+    sources: Source[];
+    follow_up_questions: string[];
+    verified_sources_enabled: boolean;
+    isUser: boolean;
+    timestamp: Date;
+}
+  
+export interface Source {
+    "content": string;
+    "score": number;
+    "title": string;
+    "url": string;
 }

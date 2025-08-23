@@ -7,15 +7,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/context/UserContext'; // Import the UserContext
 
-import { ArrowLeft, Loader2 } from 'lucide-react'
+
+import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
-import Link from 'next/link'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -79,6 +79,7 @@ export default function AuthPage() {
         setLoginError(userData.error)
       }
     } catch (error) {
+      console.error('Error logging in:', error)
       setLoginError("Network error. Please try again later.")
     } finally {
       setIsLoading(false)
@@ -116,6 +117,7 @@ export default function AuthPage() {
         setSignupError(userData.error)
       }
     } catch (error) {
+      console.error('Error signing up:', error)
       setSignupError('Network error. Please try again later.')
     } finally {
       setIsLoading(false)

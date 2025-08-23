@@ -2,6 +2,7 @@
 import { getFantasyTeams, getFantasyPlayersWeeklyStats, getFantasyPlayersSeasonStats, getFantasyTeamsWeeklyStats, getFantasyTeamsSeasonStats, getFantasyDraftPicks } from "@/lib/fantasyData";
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react"; 
 import { useLeagueTeamData } from "./LeagueTeamDataContext";
+import { FantasyTeam, FantasyPlayerWeeklyStats, FantasyPlayerSeasonStats, FantasyTeamWeeklyStats, FantasyTeamSeasonStats, FantasyDraftPick } from "@/lib/interfaces";
 
 type FantasyData = {
   fantasyTeams: FantasyTeam[];

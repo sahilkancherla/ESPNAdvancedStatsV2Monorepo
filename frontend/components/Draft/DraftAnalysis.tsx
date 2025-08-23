@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Table, TableHeader, TableRow, TableHead, TableCell, TableBody } from "../ui/table";
 import { Card, CardHeader, CardTitle, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 
-export function DraftAnalysis({draftData, getPositionBadgeStyle, getRankDifferenceBadgeStyle, getFantasyPlayerTotalSeasonPoints}: {draftData: any, getPositionBadgeStyle: (position: string) => string, getRankDifferenceBadgeStyle: (rankDifference: number) => string, getFantasyPlayerTotalSeasonPoints: (playerId: string) => number}) {
+export function DraftAnalysis({draftData, getPositionBadgeStyle, getRankDifferenceBadgeStyle, getFantasyPlayerTotalSeasonPoints}: {draftData: any, getPositionBadgeStyle: (position: string) => string, getRankDifferenceBadgeStyle: (rankDifference: number) => React.ReactElement | null | undefined, getFantasyPlayerTotalSeasonPoints: (playerId: string) => number | undefined}) {
 
     return (
         <Card>
@@ -22,7 +23,7 @@ export function DraftAnalysis({draftData, getPositionBadgeStyle, getRankDifferen
               </TableRow>
             </TableHeader>
             <TableBody>
-              {draftData.map((pick) => (
+              {draftData.map((pick: any) => (
                 <TableRow key={pick.id} className="hover:bg-muted/50">
                   <TableCell className="font-mono font-medium">
                     <Badge variant="outline" className="ml-2">

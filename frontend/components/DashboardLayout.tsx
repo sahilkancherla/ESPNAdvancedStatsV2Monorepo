@@ -4,11 +4,8 @@ import { ReactNode } from 'react'
 import { CustomSidebar } from "@/components/CustomSidebar"
 import {
   SidebarInset,
-  SidebarTrigger,
 } from "@/components/ui/sidebar"
 import { Providers } from '@/components/Providers'
-import { UserProvider } from '@/context/UserContext'
-import { useLeagueTeamData } from '@/context/LeagueTeamDataContext'
 import { DashboardContent } from './DashboardContent';
 
 interface DashboardLayoutProps {

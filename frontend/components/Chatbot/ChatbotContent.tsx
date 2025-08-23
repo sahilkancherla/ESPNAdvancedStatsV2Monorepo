@@ -1,38 +1,13 @@
 'use client'
 import { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { Search, Filter } from 'lucide-react'
-import { useFantasyData } from '@/context/FantasyDataContext'
-import { useNFLData } from '@/context/NFLDataContext'
+import { Card, CardContent } from '@/components/ui/card'
 import { Switch } from "@/components/ui/switch"
 import { ChatMessage } from "@/components/Chatbot/ChatMessage";
 import { ChatInput } from "@/components/Chatbot/ChatInput";
 import { TypingIndicator } from "@/components/Chatbot/TypingIndicator";
 import { SuggestedQuestions } from "@/components/Chatbot/SuggestedQuestions";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Trophy } from "lucide-react";
-
-
-interface Message {
-    id: string;
-    text: string;
-    sources: Source[];
-    follow_up_questions: string[];
-    verified_sources_enabled: boolean;
-    isUser: boolean;
-    timestamp: Date;
-}
-  
-interface Source {
-    "content": string;
-    "score": number;
-    "title": string;
-    "url": string;
-}
+import { Message, Source } from '@/lib/interfaces';
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -134,6 +109,7 @@ export function ChatbotContent() {
           };
           setMessages(prev => [...prev, botMessage]);
         } catch (error) {
+          console.error('Error fetching AI response:', error);
           const errorMessage: Message = {
             id: (Date.now() + 1).toString(),
             text: "Sorry, I encountered an error while processing your request. Please try again.",

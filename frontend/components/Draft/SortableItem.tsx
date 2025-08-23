@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
 "use client";
 
 import { GripVertical, MessageSquare } from "lucide-react";
@@ -6,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { Button } from "@/components/ui/button";
 import { ChevronDown } from "lucide-react";
 import { useState, useCallback, memo } from "react";
-import { PLAYER_LABELS, getLabelConfig, getLabelColor } from "@/lib/utils";
+import { PLAYER_LABELS, getLabelConfig } from "@/lib/utils";
 
 interface PlayerLabelDropdownProps {
   currentLabel?: string | null
@@ -160,7 +162,7 @@ export const SortableItem = memo(function SortableItem({
   const handleLabelChange = useCallback((label: string) => {
     console.log("player.big_board_id")
     console.log(player.big_board_id)
-    updatePlayerLabel(player.big_board_id, label);
+    updatePlayerLabel(player.big_board_id as string, label);
   }, [player.big_board_id, updatePlayerLabel]);
 
   const handleNotesChange = useCallback((notes: string) => {
@@ -169,7 +171,7 @@ export const SortableItem = memo(function SortableItem({
 
   const handleNotesSave = useCallback(() => {
     if (localNotes !== player.notes) {
-      updatePlayerNotes(player.big_board_id, localNotes);
+      updatePlayerNotes(player.big_board_id as string, localNotes);
     }
     setIsNotesOpen(false);
   }, [localNotes, player.notes, player.big_board_id, updatePlayerNotes]);
