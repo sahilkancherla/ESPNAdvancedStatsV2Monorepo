@@ -25,6 +25,8 @@ def initialize_system():
     except Exception as e:
         return False
 
+initialize_system()
+
 @app.route('/')
 def home():
     return jsonify(message="Python Flask Backend is Running")
