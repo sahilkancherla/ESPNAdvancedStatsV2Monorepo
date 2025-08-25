@@ -4,7 +4,6 @@ import {
   TrendingUp,
   Users,
   Target,
-  ArrowRightLeft,
   BarChart3,
   Search,
   MessageCircle,
@@ -51,11 +50,11 @@ const data = {
       url: "/player-tiers",
       icon: BarChart3,
     },
-    {
-      title: "Trade Evaluators",
-      url: "/trade-evaluators",
-      icon: ArrowRightLeft,
-    },
+    // {
+    //   title: "Trade Evaluators",
+    //   url: "/trade-evaluators",
+    //   icon: ArrowRightLeft,
+    // },
   ],
   research: [
     {
@@ -63,16 +62,16 @@ const data = {
       url: "/chatbot",
       icon: MessageCircle,
     },
-    {
-      title: "Volume",
-      url: "/volume",
-      icon: BarChart3,
-    },
-    {
-      title: "Player Rankings",
-      url: "/player-rankings",
-      icon: Trophy,
-    },
+    // {
+    //   title: "Volume",
+    //   url: "/volume",
+    //   icon: BarChart3,
+    // },
+    // {
+    //   title: "Player Rankings",
+    //   url: "/player-rankings",
+    //   icon: Trophy,
+    // },
   ],
 }
 

@@ -5,12 +5,12 @@ interface SuggestedQuestionsProps {
 }
 
 const SUGGESTED_QUESTIONS = [
-  "Who should I start at QB this week?",
-  "What's the trade value of Tyreek Hill?",
-  "Best waiver wire pickups this week?",
-  "Should I trade my RB1 for two WR2s?",
-  "Which defense has the easiest schedule?",
-  "Who are the top rookie fantasy players?"
+  "What are the current NFL playoff standings?",
+  "Which teams have the strongest strength of schedule?",
+  "Who are the top performers by position this season?",
+  "What are the key injury reports affecting teams?",
+  "Which rookies are having breakout seasons?",
+  "How do weather conditions affect team performance?"
 ];
 
 export const SuggestedQuestions = ({ onSelectQuestion }: SuggestedQuestionsProps) => {

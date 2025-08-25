@@ -13,7 +13,6 @@ interface DashboardLayoutProps {
   children: ReactNode
 }
 
-const year = 2024;
 
 export function DashboardContent({ 
   children, 
@@ -26,7 +25,7 @@ export function DashboardContent({
   };
 
   return (
-      <Providers year={year}>
+      <Providers>
         <CustomSidebar />
         <SidebarInset>
           <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">

@@ -22,6 +22,7 @@ import nflRouter from './routes/nfl.js';
 import teamRouter from './routes/team.js';
 import chatbotRouter from './routes/chatbot.js';
 import mockRouter from './routes/mock.js';
+import adminRouter from './routes/admin.js';
 // Middleware to add Supabase client to all routes
 app.use((req, res, next) => {
   req.supabase = supabase;
@@ -35,6 +36,7 @@ app.use('/nfl', nflRouter);
 app.use('/team', teamRouter);
 app.use('/chatbot', chatbotRouter);
 app.use('/mock', mockRouter);
+app.use('/admin', adminRouter);
 const port = process.env.PORT || 3000;
 
 server.listen(port, () => {

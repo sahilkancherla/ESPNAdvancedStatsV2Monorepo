@@ -15,7 +15,7 @@ type NFLData = {
 
 const NFLDataContext = createContext<NFLData | undefined>(undefined);
 
-export function NFLDataProvider({ year, children }: { year: number, children: ReactNode }) {
+export function NFLDataProvider({ year, children }: { year: number | null, children: ReactNode }) {
   const [data, setData] = useState<NFLData>({
     nflTeams: [],
     nflPlayers: [],
@@ -27,7 +27,7 @@ export function NFLDataProvider({ year, children }: { year: number, children: Re
   });
 
   useEffect(() => {
-    async function fetchAll() {
+    async function fetchAll(currentYear: number) {
       const [
         nflTeams,
         nflPlayers,
@@ -37,13 +37,13 @@ export function NFLDataProvider({ year, children }: { year: number, children: Re
         nflTeamWeeklyStats,
         nflTeamSeasonStats
       ] = await Promise.all([
-        getNFLTeams(year),
-        getNFLPlayers(year),
-        getNFLSchedule(year),
-        getNFLPlayerWeeklyStats(year),
-        getNFLPlayerSeasonStats(year),
-        getNFLTeamWeeklyStats(year),
-        getNFLTeamSeasonStats(year),
+        getNFLTeams(currentYear),
+        getNFLPlayers(currentYear),
+        getNFLSchedule(currentYear),
+        getNFLPlayerWeeklyStats(currentYear),
+        getNFLPlayerSeasonStats(currentYear),
+        getNFLTeamWeeklyStats(currentYear),
+        getNFLTeamSeasonStats(currentYear),
       ]);      
 
       // NFL Player Weekly Stats
@@ -366,8 +366,9 @@ export function NFLDataProvider({ year, children }: { year: number, children: Re
         nflTeamSeasonStats: cleaned_team_season_stats
       });
     }
-    
-    fetchAll();
+    if (year) {
+      fetchAll(year);
+    }
   }, [year]);
 
   return (

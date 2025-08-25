@@ -14,14 +14,13 @@ interface DashboardLayoutProps {
   subtitle?: string
 }
 
-const year = 2024;
 
 export function DashboardLayout({ 
   children, 
 }: DashboardLayoutProps) {
 
   return (
-      <Providers year={year}>
+      <Providers>
         <CustomSidebar />
         <SidebarInset>
           <DashboardContent>

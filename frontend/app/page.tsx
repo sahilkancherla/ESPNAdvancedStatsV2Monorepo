@@ -1,271 +1,99 @@
-// src/app/page.tsx (root page, not auth/page.tsx)
-'use client'
-
-import { useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+"use client"
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/context/UserContext'; // Import the UserContext
+import { Button } from '@/components/ui/button';
+import { 
+  ArrowRight,
+  ChevronRight,
+  Star
+} from 'lucide-react';
 
+export default function FantasyDashboard() {
+  const router = useRouter();
 
-import { Loader2 } from 'lucide-react'
-import { toast } from 'sonner'
-
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
-
-const loginSchema = z.object({
-  email: z.string().min(2, { message: 'Name must be at least 2 characters long' }),
-  password: z.string().min(5, { message: 'Password must be at least 5 characters long' }),
-})
-
-const signupSchema = loginSchema.extend({
-  username: z.string().min(2, { message: 'Username must be at least 2 characters long' }),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ['confirmPassword'],
-})
-
-export default function AuthPage() {
-  const [activeTab, setActiveTab] = useState('login')
-  const [isLoading, setIsLoading] = useState(false)
-  const [loginError, setLoginError] = useState<string | null>(null)
-  const [signupError, setSignupError] = useState<string | null>(null)
-  const router = useRouter()
-  const { setUser } = useUser() // Get setUser from context
-
-  const loginForm = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
-    defaultValues: { email: '', password: '' },
-  })
-
-  const signupForm = useForm<z.infer<typeof signupSchema>>({
-    resolver: zodResolver(signupSchema),
-    defaultValues: { email: '', password: '', confirmPassword: '', username: '' },
-  })
-
-  const onLoginSubmit = async (values: z.infer<typeof loginSchema>) => {
-    setIsLoading(true)
-    setLoginError(null)
-    try {
-      const response = await fetch(`${BACKEND_URL}/auth/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(values),
-      })
-  
-      const userData = await response.json();
-      if (response.ok) {
-        // Store JWT token
-        localStorage.setItem('authToken', userData.session.access_token)
-        
-        // Set user in context (no more URL params!)
-        setUser({
-          id: userData.user.id,
-          username: userData.user.username,
-          email: userData.user.email
-        });
-        
-        toast.success('Login successful!')
-        // Clean redirect without user data in URL
-        router.push('/home');
-      } else {
-        setLoginError(userData.error)
-      }
-    } catch (error) {
-      console.error('Error logging in:', error)
-      setLoginError("Network error. Please try again later.")
-    } finally {
-      setIsLoading(false)
-    }
-  }
-  
-  const onSignupSubmit = async (values: z.infer<typeof signupSchema>) => {
-    setIsLoading(true)
-    setSignupError(null)
-    const data = { email: values.email, password: values.password, username: values.username }
-    
-    try {
-      const response = await fetch(`${BACKEND_URL}/auth/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      })
-  
-      const userData = await response.json()
-      if (response.ok) {
-        // Store JWT token
-        localStorage.setItem('authToken', userData.token)
-        
-        // Set user in context (no more URL params!)
-        setUser({
-          id: userData.user.id,
-          username: userData.user.username,
-          email: userData.user.email
-        });
-        
-        toast.success('Account created successfully!')
-        // Clean redirect without user data in URL
-        router.push('/home');
-      } else {
-        setSignupError(userData.error)
-      }
-    } catch (error) {
-      console.error('Error signing up:', error)
-      setSignupError('Network error. Please try again later.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const handleSignInClick = () => {
+    router.push('/auth');
+  };
 
   return (
-    <div className="flex flex-col h-screen w-full">
-      {/* Back button in top left
-      <div className="p-6">
-        <Link href="/">
-          <Button variant="outline" size="sm" className="flex items-center m-2">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            Back
-          </Button>
-        </Link>
-      </div> */}
-      
-      {/* Main content centered */}
-      <div className="flex-1 flex items-center justify-center p-4">
-        <div className="w-full max-w-[400px]">
-          <div className="flex flex-col space-y-2 text-left mb-6">
-            <h1 className="text-2xl font-semibold tracking-tight text-center">ESPN FF Advanced Stats</h1>
-            <p className="text-sm text-muted-foreground text-center">Your Ultimate Fantasy Football Assistant</p>
+    <div className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-white to-gray-100">
+      {/* Navigation */}
+      <nav className="w-full border-b border-gray-200 backdrop-blur-md bg-white/80">
+        <div className="w-full px-6 lg:px-8">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex items-center space-x-2">
+              {/* <img src="/favicon.ico" alt="StatSphere" className="w-8 h-8" /> */}
+              {/* <span className="text-xl font-bold text-gray-900">StatSphere</span> */}
+            </div>
+            <Button 
+              onClick={handleSignInClick}
+              className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0"
+            >
+              Sign In
+              <ChevronRight className="w-4 h-4" />
+            </Button>
           </div>
-          
-          <Card>
-            <CardHeader>
-              <CardTitle>{activeTab === 'login' ? 'Login' : 'Sign up'}</CardTitle>
-              <CardDescription>
-                {activeTab === 'login' ? 'Sign in to your account' : 'Create a new account'}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6">
-                  <TabsTrigger value="login">Login</TabsTrigger>
-                  <TabsTrigger value="signup">Sign Up</TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="login" className="mt-0">
-                  <Form {...loginForm}>
-                    <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
-                      <FormField
-                        control={loginForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="Enter your email" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={loginForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} placeholder="••••••••" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Logging in...</> : "Sign In"}
-                      </Button>
-                      {loginError && (
-                        <div className="text-red-500 text-sm text-center">{loginError}</div>
-                      )}
-                    </form>
-                  </Form>
-                </TabsContent>
-                
-                <TabsContent value="signup" className="mt-0">
-                  <Form {...signupForm}>
-                    <form onSubmit={signupForm.handleSubmit(onSignupSubmit)} className="space-y-4">
-                      <FormField
-                        control={signupForm.control}
-                        name="email"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="Choose an email" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={signupForm.control}
-                        name="username"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Username</FormLabel>
-                            <FormControl>
-                              <Input {...field} placeholder="Choose a username" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={signupForm.control}
-                        name="password"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Password</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} placeholder="Create a strong password" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <FormField
-                        control={signupForm.control}
-                        name="confirmPassword"
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Confirm Password</FormLabel>
-                            <FormControl>
-                              <Input type="password" {...field} placeholder="Confirm your password" disabled={isLoading} />
-                            </FormControl>
-                            <FormMessage />
-                          </FormItem>
-                        )}
-                      />
-                      <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Creating account...</> : "Create Account"}
-                      </Button>
-                      {signupError && (
-                        <div className="text-red-500 text-sm text-center">{signupError}</div>
-                      )}
-                    </form>
-                  </Form>
-                </TabsContent>
-              </Tabs>
-            </CardContent>
-          </Card>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <div className="relative w-full overflow-hidden flex-1">
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-100/50 to-blue-200/30 blur-3xl"></div>
+        <div className="relative w-full px-6 lg:px-8 pt-20 pb-16 min-h-[calc(100vh-80px)] flex items-center">
+          <div className="text-center w-full">
+            <div className="inline-flex items-center bg-blue-50 border border-blue-200 rounded-full px-4 py-2 mb-8">
+              <Star className="w-4 h-4 text-blue-500 mr-2" />
+              <span className="text-sm text-gray-700">Everything you need to win</span>
+            </div>
+            
+            <h1 className="text-6xl lg:text-8xl font-bold text-gray-900 mb-7 leading-tight">
+              The Ultimate
+              <span className="bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent block">
+                Fantasy Football Portal
+              </span>
+            </h1>
+            
+            <p className="text-2xl text-gray-600 mb-12 max-w-4xl mx-auto leading-relaxed">
+              Advanced analytics, AI-powered insights, and real-time data to give you the competitive edge you need to win your fantasy championship.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+              <Button 
+                onClick={handleSignInClick}
+                size="lg" 
+                className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 px-12 py-6 text-xl"
+              >
+                Sign In
+                <ArrowRight className="w-6 h-6 ml-2" />
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="w-full border-t border-gray-200 bg-white/80 backdrop-blur-md mt-auto">
+        <div className="w-full px-6 lg:px-8 py-12">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-2 mb-6 md:mb-0">
+              {/* <img src="/favicon.ico" alt="StatSphere" className="w-8 h-8" /> */}
+              {/* <span className="text-gray-900 font-bold text-xl">StatSphere</span> */}
+            </div>
+            <div className="flex flex-col md:flex-row items-center gap-8">
+              <div className="flex flex-wrap justify-center gap-8 text-gray-600">
+                <a href="#" className="hover:text-blue-600 transition-colors">About</a>
+                <a href="#" className="hover:text-blue-600 transition-colors">Features</a>
+                {/* <a href="#" className="hover:text-blue-600 transition-colors">Pricing</a> */}
+                <a href="#" className="hover:text-blue-600 transition-colors">Support</a>
+                <a href="#" className="hover:text-blue-600 transition-colors">Privacy</a>
+                <a href="#" className="hover:text-blue-600 transition-colors">Terms</a>
+              </div>
+              {/* <div className="text-gray-500 text-sm">
+                © 2024 StatSphere. All rights reserved.
+              </div> */}
+            </div>
+          </div>
+        </div>
+      </footer>
     </div>
-  )
+  );
 }

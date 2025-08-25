@@ -17,7 +17,7 @@ type FantasyData = {
 
 const FantasyDataContext = createContext<FantasyData | undefined>(undefined);
 
-export function FantasyDataProvider({ year, children }: { year: number, children: ReactNode }) {
+export function FantasyDataProvider({ year, children }: { year: number | null, children: ReactNode }) {
 
   const { selectedLeagueId } = useLeagueTeamData();
     
@@ -34,7 +34,7 @@ export function FantasyDataProvider({ year, children }: { year: number, children
     refetchData: () => {}
   });
 
-  const fetchAll = useCallback(async (leagueId: string) => {
+  const fetchAll = useCallback(async (leagueId: string, currentYear: number) => {
     console.log("Fetching fantasy data for league:", leagueId, "year:", year);
     setData(prev => ({ ...prev, isLoading: true }));
     
@@ -48,11 +48,11 @@ export function FantasyDataProvider({ year, children }: { year: number, children
         fantasyDraftPicks
       ] = await Promise.all([
         getFantasyTeams(leagueId),
-        getFantasyPlayersWeeklyStats(leagueId, year),
-        getFantasyPlayersSeasonStats(leagueId, year),
-        getFantasyTeamsWeeklyStats(leagueId, year),
-        getFantasyTeamsSeasonStats(leagueId, year),
-        getFantasyDraftPicks(leagueId, year)
+        getFantasyPlayersWeeklyStats(leagueId, currentYear),
+        getFantasyPlayersSeasonStats(leagueId, currentYear),
+        getFantasyTeamsWeeklyStats(leagueId, currentYear),
+        getFantasyTeamsSeasonStats(leagueId, currentYear),
+        getFantasyDraftPicks(leagueId, currentYear)
       ]);
 
       const cleaned_fantasy_teams = [];
@@ -173,10 +173,10 @@ export function FantasyDataProvider({ year, children }: { year: number, children
 
   // Create refetch function
   const refetchData = useCallback(() => {
-    if (selectedLeagueId) {
-      fetchAll(selectedLeagueId);
+    if (selectedLeagueId && year) {
+      fetchAll(selectedLeagueId, year);
     }
-  }, [selectedLeagueId, fetchAll]);
+  }, [selectedLeagueId, year, fetchAll]);
 
   // Update the data with the refetch function
   useEffect(() => {
@@ -187,8 +187,8 @@ export function FantasyDataProvider({ year, children }: { year: number, children
   useEffect(() => {
     console.log("useEffect running with:", { selectedLeagueId, year });
 
-    if (selectedLeagueId) {
-      fetchAll(selectedLeagueId);
+    if (selectedLeagueId && year) {
+      fetchAll(selectedLeagueId, year);
     } else {
       // Reset data when no league is selected
       setData({
@@ -202,7 +202,7 @@ export function FantasyDataProvider({ year, children }: { year: number, children
         refetchData: () => {}
       });
     }
-  }, [selectedLeagueId, fetchAll]);
+  }, [selectedLeagueId, year, fetchAll]);
 
   return <FantasyDataContext.Provider value={data}>{children}</FantasyDataContext.Provider>;
 }
