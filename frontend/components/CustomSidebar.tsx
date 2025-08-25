@@ -50,10 +50,15 @@ const data = {
       url: "/player-tiers",
       icon: BarChart3,
     },
-    // {
-    //   title: "Trade Evaluators",
-    //   url: "/trade-evaluators",
-    //   icon: ArrowRightLeft,
+    {
+      title: "Luck",
+      url: "/luck",
+      icon: Trophy,
+    },
+      // {
+      //   title: "Trade Evaluators",
+      //   url: "/trade-evaluators",
+      //   icon: ArrowRightLeft,
     // },
   ],
   research: [
