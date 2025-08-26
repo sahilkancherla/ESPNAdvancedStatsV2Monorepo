@@ -1,3 +1,6 @@
+// LuckContent.tsx
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 'use client'
 import { useState, useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -10,7 +13,6 @@ import {
     HoverCardTrigger,
     HoverCardContent,
   } from "@/components/ui/hover-card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, TrendingUp, TrendingDown, ChevronDown, ChevronRight, Info, ArrowRight } from 'lucide-react'
 import { useFantasyData } from '@/context/FantasyDataContext';
 import React from 'react';
@@ -212,14 +214,6 @@ export function LuckContent() {
       newExpanded.add(teamId);
     }
     setExpandedRows(newExpanded);
-  };
-
-  const getLuckBadge = (luckScore: number) => {
-    if (luckScore >= 2) return <Badge className="bg-green-500">Very Lucky</Badge>;
-    if (luckScore >= 1) return <Badge className="bg-green-400">Lucky</Badge>;
-    if (luckScore >= -1) return <Badge variant="secondary">Average</Badge>;
-    if (luckScore >= -2) return <Badge className="bg-red-400">Unlucky</Badge>;
-    return <Badge className="bg-red-500">Very Unlucky</Badge>;
   };
 
   const getCompositeBadge = (score: number) => {
