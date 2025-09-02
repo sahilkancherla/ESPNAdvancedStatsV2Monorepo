@@ -7,7 +7,10 @@ from util.data_population.supabase_helper import get_supabase_client
 from util.data_population.nfl_data_population import populate_nfl_data
 from util.data_population.fantasy_data_population import populate_fantasy_data
 from util.data_population.fantasy_draft_data_population import insert_league_draft_picks
+from util.data_population.fantasy_current_roster import update_current_roster_for_all_teams
+from util.data_population.fantasy_team_points_live_tracking import get_and_insert_current_scores
 from util.chatbot_processing.graph import FootballQASystem
+from util.data_population.nfl_big_plays import get_all_big_play_timestamps, insert_big_plays
 import os
 
 app = Flask(__name__)
@@ -29,6 +32,10 @@ initialize_system()
 
 @app.route('/')
 def home():
+    return jsonify(message="Python Flask Backend is Running")
+
+@app.route('/api/keepAlive', methods=['GET'])
+def keep_alive():
     return jsonify(message="Python Flask Backend is Running")
 
 @app.route('/api/getLeagueDetails', methods=['GET'])
@@ -184,9 +191,9 @@ def get_league_details():
 @app.route('/api/updateNFLData', methods=['POST'])
 def update_nfl_data():
     payload = request.get_json()
-    current_week = payload.get('currentWeek')
-    year = payload.get('year')
-    updateWeeksBeforeCurrentWeek = payload.get('updateAllWeeks')
+    current_week = int(payload.get('currentWeek'))
+    year = int(payload.get('year'))
+    updateWeeksBeforeCurrentWeek = False
     
     supabase_client = get_supabase_client()
     
@@ -197,9 +204,9 @@ def update_nfl_data():
 @app.route('/api/updateFantasyData', methods=['POST'])
 def update_fantasy_data():
     payload = request.get_json()
-    current_week = payload.get('currentWeek')
-    year = payload.get('year')
-    updateAllWeeks = payload.get('updateAllWeeks')
+    current_week = int(payload.get('currentWeek'))
+    year = int(payload.get('year'))
+    updateAllWeeks = False
     external_league_id = payload.get('externalLeagueId')
     swid = payload.get('swid')
     espn_s2 = payload.get('espnS2')
@@ -216,7 +223,7 @@ def update_fantasy_draft_data():
     external_league_id = payload.get('externalLeagueId')
     swid = payload.get('swid')
     espn_s2 = payload.get('espnS2')
-    year = payload.get('year')
+    year = int(payload.get('year'))
     
     supabase_client = get_supabase_client()
         
@@ -269,6 +276,56 @@ def ask_question():
         print(f"API error: {str(e)}")
         return jsonify({
             "error": "Internal server error",
+            "message": str(e)
+        }), 500
+
+@app.route('/api/updateLeagueCurrentRosters', methods=['POST'])
+def update_current_roster():
+    payload = request.get_json()
+    league_id = payload.get('leagueId')
+    swid = payload.get('swid')
+    espn_s2 = payload.get('espnS2')
+    year = int(payload.get('year'))
+    
+    supabase_client = get_supabase_client()
+    league = League(league_id=league_id, year=year, espn_s2=espn_s2, swid=swid)
+    
+    print(f"Updating current roster for league {league_id}, year {year}")
+    update_current_roster_for_all_teams(league, supabase_client)
+    
+    return jsonify(success=True)
+
+@app.route('/api/updateFantasyPointsLiveTracking', methods=['POST'])
+def update_fantasy_points_live_tracking():
+    payload = request.get_json()
+    league_id = payload.get('leagueId')
+    swid = payload.get('swid')
+    espn_s2 = payload.get('espnS2')
+    year = int(payload.get('year'))
+    week = int(payload.get('week'))
+    
+    supabase_client = get_supabase_client()
+    league = League(league_id=league_id, year=year, espn_s2=espn_s2, swid=swid)
+    
+    get_and_insert_current_scores(league, week, supabase_client)
+    
+    return jsonify(success=True)
+
+@app.route('/api/updateNFLBigPlays', methods=['POST'])
+def update_nfl_big_plays():
+    payload = request.get_json()
+    week = int(payload.get('week'))
+    year = int(payload.get('year'))
+    
+    try:
+        nfl_big_plays = get_all_big_play_timestamps(week, year)
+        insert_big_plays(nfl_big_plays)
+        
+        return jsonify(success=True)
+    except Exception as e:
+        print(f"Error updating NFL big plays: {str(e)}")
+        return jsonify({
+            "error": "Failed to update NFL big plays",
             "message": str(e)
         }), 500
         
