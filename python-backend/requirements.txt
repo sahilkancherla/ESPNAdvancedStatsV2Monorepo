@@ -27,6 +27,7 @@ langchain==0.3.27
 langchain-core==0.3.74
 langchain-openai==0.3.30
 langchain-text-splitters==0.3.9
+langgraph
 
 # Data validation
 pydantic==2.11.7
