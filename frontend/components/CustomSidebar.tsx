@@ -27,9 +27,19 @@ import {
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import { useLeagueTeamData } from "@/context/LeagueTeamDataContext"
+import { useUser } from "@/context/UserContext"
 
-const data = {
-  myLeague: [
+const ADMIN_USER_ID = process.env.NEXT_PUBLIC_ADMIN_USER_ID;
+
+export function CustomSidebar() {
+  const { leagues, isLoading } = useLeagueTeamData();
+  const { user } = useUser();
+
+  const isAdmin = user?.id === ADMIN_USER_ID;
+  
+  const hasLeagues = leagues && leagues.length > 0;
+
+  const myLeagueItems = [
     {
       title: "League Median",
       url: "/league-median",
@@ -51,17 +61,23 @@ const data = {
       icon: BarChart3,
     },
     {
+      title: "Live Point Tracking",
+      url: "/live-tracking",
+      icon: Users,
+    },
+    {
       title: "Luck",
       url: "/luck",
       icon: Trophy,
     },
-      // {
-      //   title: "Trade Evaluators",
-      //   url: "/trade-evaluators",
-      //   icon: ArrowRightLeft,
-    // },
-  ],
-  research: [
+    ...(isAdmin ? [{
+        title: "Admin",
+        url: "/admin",
+        icon: Trophy,
+    }] : []),
+  ];
+
+  const researchItems = [
     {
       title: "AI Assistant",
       url: "/chatbot",
@@ -77,13 +93,7 @@ const data = {
     //   url: "/player-rankings",
     //   icon: Trophy,
     // },
-  ],
-}
-
-export function CustomSidebar() {
-  const { leagues, isLoading } = useLeagueTeamData();
-  
-  const hasLeagues = leagues && leagues.length > 0;
+  ];
 
   return (
     <Sidebar>
@@ -110,7 +120,7 @@ export function CustomSidebar() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {data.myLeague.map((item) => (
+                        {myLeagueItems.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
                             <SidebarMenuSubButton asChild>
                               <a href={item.url}>
@@ -136,7 +146,7 @@ export function CustomSidebar() {
                     </CollapsibleTrigger>
                     <CollapsibleContent>
                       <SidebarMenuSub>
-                        {data.research.map((item) => (
+                        {researchItems.map((item) => (
                           <SidebarMenuSubItem key={item.title}>
                             <SidebarMenuSubButton asChild>
                               <a href={item.url}>

@@ -293,3 +293,12 @@ export interface Source {
     "title": string;
     "url": string;
 }
+
+export interface NFLBigPlay {
+    id: string
+    player_id: string
+    timestamp: string
+    description: string
+    week: number
+    year: number
+}

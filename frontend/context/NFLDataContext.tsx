@@ -1,7 +1,7 @@
 // context/NFLDataContext.tsx
-import { getNFLTeams, getNFLPlayers, getNFLSchedule, getNFLPlayerWeeklyStats, getNFLPlayerSeasonStats, getNFLTeamWeeklyStats, getNFLTeamSeasonStats } from "@/lib/nflData";
+import { getNFLTeams, getNFLPlayers, getNFLSchedule, getNFLPlayerWeeklyStats, getNFLPlayerSeasonStats, getNFLTeamWeeklyStats, getNFLTeamSeasonStats, getNFLBigPlays } from "@/lib/nflData";
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { NFLTeam, NFLPlayer, NFLGame, NFLPlayerWeeklyStats, NFLPlayerSeasonStats, NFLTeamWeeklyStats, NFLTeamSeasonStats } from "@/lib/interfaces";
+import { NFLTeam, NFLPlayer, NFLGame, NFLPlayerWeeklyStats, NFLPlayerSeasonStats, NFLTeamWeeklyStats, NFLTeamSeasonStats, NFLBigPlay } from "@/lib/interfaces";
 
 type NFLData = {
   nflTeams: NFLTeam[];
@@ -11,6 +11,7 @@ type NFLData = {
   nflPlayerSeasonStats: NFLPlayerSeasonStats[];
   nflTeamWeeklyStats: NFLTeamWeeklyStats[];
   nflTeamSeasonStats: NFLTeamSeasonStats[];
+  nflBigPlays: NFLBigPlay[];
 };
 
 const NFLDataContext = createContext<NFLData | undefined>(undefined);
@@ -23,7 +24,8 @@ export function NFLDataProvider({ year, children }: { year: number | null, child
     nflPlayerWeeklyStats: [],
     nflPlayerSeasonStats: [],
     nflTeamWeeklyStats: [],
-    nflTeamSeasonStats: []
+    nflTeamSeasonStats: [],
+    nflBigPlays: [],
   });
 
   useEffect(() => {
@@ -35,7 +37,8 @@ export function NFLDataProvider({ year, children }: { year: number | null, child
         nflPlayerWeeklyStats,
         nflPlayerSeasonStats,
         nflTeamWeeklyStats,
-        nflTeamSeasonStats
+        nflTeamSeasonStats,
+        nflBigPlays,
       ] = await Promise.all([
         getNFLTeams(currentYear),
         getNFLPlayers(currentYear),
@@ -44,6 +47,7 @@ export function NFLDataProvider({ year, children }: { year: number | null, child
         getNFLPlayerSeasonStats(currentYear),
         getNFLTeamWeeklyStats(currentYear),
         getNFLTeamSeasonStats(currentYear),
+        getNFLBigPlays(currentYear),
       ]);      
 
       // NFL Player Weekly Stats
@@ -356,6 +360,25 @@ export function NFLDataProvider({ year, children }: { year: number | null, child
         });
       }
 
+      // NFL Big Plays
+      const cleaned_big_plays = [];
+
+      console.log("nflBigPlays")
+      console.log(nflBigPlays.data)
+      for (const bigPlay of nflBigPlays.data) {
+        cleaned_big_plays.push({
+          id: bigPlay.id,
+          player_id: bigPlay.player_id,
+          timestamp: bigPlay.timestamp,
+          description: bigPlay.description,
+          week: bigPlay.week,
+          year: bigPlay.year,
+        });
+      }
+
+      console.log("cleaned_big_plays")
+      console.log(cleaned_big_plays)
+
       setData({
         nflTeams: cleaned_teams,
         nflPlayers: cleaned_players,
@@ -363,7 +386,8 @@ export function NFLDataProvider({ year, children }: { year: number | null, child
         nflPlayerWeeklyStats: cleanedPlayerWeeklyStats,
         nflPlayerSeasonStats: cleanedNFLPlayerSeasonStats,
         nflTeamWeeklyStats: cleaned_team_weekly_stats,
-        nflTeamSeasonStats: cleaned_team_season_stats
+        nflTeamSeasonStats: cleaned_team_season_stats,
+        nflBigPlays: cleaned_big_plays,
       });
     }
     if (year) {

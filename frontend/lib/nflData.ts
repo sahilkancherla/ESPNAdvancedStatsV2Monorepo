@@ -50,3 +50,10 @@ export async function getNFLTeamSeasonStats(year: number) {
   });
   return res.json();
 }
+
+export async function getNFLBigPlays(year: number) {
+  const res = await fetch(`${API_URL}/nfl/getNFLBigPlays?year=${year}`, {
+    cache: "no-store",
+  });
+  return res.json();
+}
