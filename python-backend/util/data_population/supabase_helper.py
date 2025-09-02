@@ -78,3 +78,10 @@ def get_espn_player_id_to_player_id_map(supabase_client):
     for player in response.data:
         player_map[player["espn_player_id"]] = player["id"]
     return player_map
+
+def get_current_player_id_to_team_id_roster_map(supabase_client, league_id, year):
+    response = supabase_client.table("fantasy_team_roster").select("player_id, team_id").eq("league_id", league_id).eq("year", year).execute()
+    player_map = {}
+    for player in response.data:
+        player_map[player["player_id"]] = player["team_id"]
+    return player_map

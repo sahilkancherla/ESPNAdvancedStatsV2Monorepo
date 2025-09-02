@@ -1,0 +1,3 @@
+ALTER TABLE nfl_big_plays
+ALTER COLUMN timestamp
+TYPE TIMESTAMPTZ USING timestamp AT TIME ZONE 'UTC';

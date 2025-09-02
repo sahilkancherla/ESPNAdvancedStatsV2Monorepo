@@ -34,10 +34,6 @@ initialize_system()
 def home():
     return jsonify(message="Python Flask Backend is Running")
 
-@app.route('/api/keepAlive', methods=['GET'])
-def keep_alive():
-    return jsonify(message="Python Flask Backend is Running")
-
 @app.route('/api/getLeagueDetails', methods=['GET'])
 def get_league_details():
     

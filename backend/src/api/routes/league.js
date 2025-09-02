@@ -565,7 +565,8 @@ router.get('/getFantasyDraftPicks', async (req, res) => {
         return res.status(500).json({ error: 'Failed to fetch fantasy draft picks', details: fantasyDraftPicksError.message });
     }
 
-    return res.status(200).json({ data: fantasyDraftPicks });
+    const sortedFantasyDraftPicks = fantasyDraftPicks.sort((a, b) => a.round_number - b.round_number || a.pick_number - b.pick_number);
+    return res.status(200).json({ data: sortedFantasyDraftPicks });
 });
 
 router.post('/updateBigBoardPlayerDraftStatus', async (req, res) => {
@@ -610,6 +611,42 @@ router.post('/updateBigBoardPlayerNotes', async (req, res) => {
     }
 
     return res.status(200).json({ message: 'Notes added to big board player successfully' });
+});
+
+router.get('/getPointHistory', async (req, res) => {
+    const { leagueId, week, year } = req.query;
+
+    console.log('leagueId', leagueId)
+    console.log('week', week)
+    console.log('year', year)
+
+    const { data: pointHistory, error: pointHistoryError } = await supabase
+        .from('fantasy_team_points_live_tracking')
+        .select('*')
+        .eq('league_id', leagueId)
+        .eq('year', year)
+        .eq('week', week);
+
+    if (pointHistoryError) {
+        return res.status(500).json({ error: 'Failed to fetch point history', details: pointHistoryError.message });
+    }
+
+    return res.status(200).json({ data: pointHistory });
+});
+
+router.post('/editDraftedPlayer', async (req, res) => {
+    const { id, actualNflPlayerId, actualTeamId } = req.body;
+
+    const { error: updateError } = await supabase
+        .from('fantasy_league_draft_picks')
+        .update({ team_id: actualTeamId, player_id: actualNflPlayerId })
+        .eq('id', id);
+
+    if (updateError) {
+        return res.status(500).json({ error: 'Failed to edit drafted player', details: updateError.message });
+    }
+
+    return res.status(200).json({ message: 'Drafted player edited successfully' });
 });
 
 export default router;

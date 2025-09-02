@@ -130,4 +130,16 @@ router.get('/getNFLSchedule', async (req, res) => {
     return res.status(200).json({ schedule });
 });
 
+router.get('/getNFLBigPlays', async (req, res) => {
+    const { year } = req.query;
+    const { data, error } = await supabase
+        .from('nfl_big_plays')
+        .select('*')
+        .eq('year', year)
+    if (error) {
+        return res.status(500).json({ error: error.message })
+    }
+    return res.status(200).json({ data: data })
+})
+
 export default router;
