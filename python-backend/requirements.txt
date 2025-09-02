@@ -1,22 +1,18 @@
 # Core Flask (Python 3.8 compatible)
 Flask==3.0.3
+gunicorn==21.2.0
 flask-cors==5.0.0
-Werkzeug==3.0.4
 
 # Data processing (keeping as requested)
 numpy==1.24.4
 pandas==1.5.3
 python-dateutil==2.9.0.post0
-pytz==2025.2
 
 # HTTP requests
 requests==2.32.4
 certifi==2025.8.3
 charset-normalizer==3.4.2
 idna==3.10
-
-# Web scraping
-beautifulsoup4==4.13.4
 
 # Sports data APIs
 espn-api==0.45.1
@@ -38,3 +34,6 @@ pydantic_core==2.33.2
 
 # Configuration
 python-dotenv==1.1.1
+
+urllib3==2.2.3
+setuptools
