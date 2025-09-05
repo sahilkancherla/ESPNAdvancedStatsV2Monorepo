@@ -476,8 +476,7 @@ export function LiveTrackingContent() {
                             dataKey={team.team_name}
                             stroke={teamColors[index % teamColors.length]}
                             strokeWidth={3}
-                            dot={{ fill: teamColors[index % teamColors.length], strokeWidth: 2, r: 4 }}
-                            activeDot={{ r: 6 }}
+                            dot={false}
                           />
                         )
                       })}
