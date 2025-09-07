@@ -9,6 +9,7 @@ import { League } from "@/lib/interfaces";
 type LeagueData = {
   leagues: League[];
   selectedLeagueId: string | null;
+  myTeamId: string | null;
   setSelectedLeagueId: (leagueId: string) => void;
   isLoading: boolean;
   refreshLeagues: () => Promise<void>; // Add refresh function
@@ -20,6 +21,7 @@ export function LeagueDataProvider({ userId, children }: { userId: string, child
   const [leagues, setLeagues] = useState<League[]>([]);
   const [selectedLeagueId, setSelectedLeagueId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [myTeamId, setMyTeamId] = useState<string | null>(null);
 
   // Extract the fetch logic into a reusable function
   const fetchLeagues = async () => {
@@ -52,15 +54,18 @@ export function LeagueDataProvider({ userId, children }: { userId: string, child
         const isCurrentSelectionValid = cleanedLeagues.some(league => league.id === selectedLeagueId);
         if (!isCurrentSelectionValid) {
           setSelectedLeagueId(cleanedLeagues[0].id);
+          setMyTeamId(cleanedLeagues[0].teamId);
         }
       } else {
         // No leagues available
         setSelectedLeagueId(null);
+        setMyTeamId(null);
       }
     } catch (error) {
       console.error("Error fetching league data:", error);
       setLeagues([]);
       setSelectedLeagueId(null);
+      setMyTeamId(null);
     } finally {
       setIsLoading(false);
     }
@@ -82,6 +87,7 @@ export function LeagueDataProvider({ userId, children }: { userId: string, child
     leagues,
     selectedLeagueId,
     setSelectedLeagueId,
+    myTeamId,
     isLoading,
     refreshLeagues, // Include the refresh function
   };

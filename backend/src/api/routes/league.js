@@ -616,22 +616,65 @@ router.post('/updateBigBoardPlayerNotes', async (req, res) => {
 router.get('/getPointHistory', async (req, res) => {
     const { leagueId, week, year } = req.query;
 
-    console.log('leagueId', leagueId)
-    console.log('week', week)
-    console.log('year', year)
+    const { data: timeWindows, error: timeWindowsError } = await supabase
+        .from('admin_active_game_time_windows')
+        .select('*')
+        .eq('week', week)
+        .eq('year', year);
+    
+    if (timeWindowsError) {
+        return res.status(500).json({ error: 'Failed to fetch time windows', details: timeWindowsError.message });
+    }
 
-    const { data: pointHistory, error: pointHistoryError } = await supabase
+    // If no time windows, return empty result
+    if (!timeWindows || timeWindows.length === 0) {
+        return res.status(200).json({ data: [] });
+    }
+
+    // Build the base query
+    let pointHistoryQuery = supabase
         .from('fantasy_team_points_live_tracking')
         .select('*')
         .eq('league_id', leagueId)
         .eq('year', year)
         .eq('week', week);
 
-    if (pointHistoryError) {
-        return res.status(500).json({ error: 'Failed to fetch point history', details: pointHistoryError.message });
+    // Create OR conditions for time windows
+    // Format: "and(created_at.gte.time1,created_at.lte.time2),and(created_at.gte.time3,created_at.lte.time4)"
+    const timeWindowConditions = timeWindows.map(window => 
+        `and(created_at.gte.${window.start_time},created_at.lte.${window.end_time})`
+    ).join(',');
+    
+    // Apply the OR conditions
+    pointHistoryQuery = pointHistoryQuery.or(timeWindowConditions);
+
+    // Add sorting by created_at
+    pointHistoryQuery = pointHistoryQuery.order('created_at', { ascending: true });
+
+    // Fetch all rows using pagination
+    let allData = [];
+    let start = 0;
+    const batchSize = 1000;
+    let hasMore = true;
+
+    while (hasMore) {
+        const { data: batch, error: batchError } = await pointHistoryQuery
+            .range(start, start + batchSize - 1);
+
+        if (batchError) {
+            return res.status(500).json({ error: 'Failed to fetch point history', details: batchError.message });
+        }
+
+        if (batch && batch.length > 0) {
+            allData = allData.concat(batch);
+            start += batchSize;
+            hasMore = batch.length === batchSize;
+        } else {
+            hasMore = false;
+        }
     }
 
-    return res.status(200).json({ data: pointHistory });
+    return res.status(200).json({ data: allData });
 });
 
 router.post('/editDraftedPlayer', async (req, res) => {
@@ -647,6 +690,71 @@ router.post('/editDraftedPlayer', async (req, res) => {
     }
 
     return res.status(200).json({ message: 'Drafted player edited successfully' });
+});
+
+router.get('/getCurrentRoster', async (req, res) => {
+    const { teamId, year } = req.query;
+    const { data: currentRoster, error: currentRosterError } = await supabase
+        .from('fantasy_team_roster')
+        .select('*')
+        .eq('team_id', teamId)
+        .eq('year', year);
+
+    if (currentRosterError) {
+        return res.status(500).json({ error: 'Failed to fetch current roster', details: currentRosterError.message });
+    }
+
+    return res.status(200).json({ data: currentRoster });
+});
+
+router.get('/getLiveLatestPoints', async (req, res) => {
+    const { leagueId, week, year } = req.query;
+    
+    try {
+        // First, get all teams for this league
+        const { data: teams, error: teamsError } = await supabase
+            .from('teams')
+            .select('id')
+            .eq('league_id', leagueId);
+
+        if (teamsError) {
+            return res.status(500).json({ error: 'Failed to fetch teams', details: teamsError.message });
+        }
+
+        if (!teams || teams.length === 0) {
+            return res.status(200).json({ data: [] });
+        }
+
+        // Get the latest entry for each team from fantasy_live_point_tracking
+        const teamIds = teams.map(team => team.id);
+        const { data: livePoints, error: livePointsError } = await supabase
+            .from('fantasy_team_points_live_tracking')
+            .select('*')
+            .in('team_id', teamIds)
+            .eq('week', week)
+            .eq('year', year)
+            .order('created_at', { ascending: false });
+
+        if (livePointsError) {
+            return res.status(500).json({ error: 'Failed to fetch live points', details: livePointsError.message });
+        }
+
+        // Get the latest entry for each team
+        const latestPointsByTeam = {};
+        if (livePoints) {
+            livePoints.forEach(entry => {
+                if (!latestPointsByTeam[entry.team_id]) {
+                    latestPointsByTeam[entry.team_id] = entry;
+                }
+            });
+        }
+
+        const result = Object.values(latestPointsByTeam);
+        return res.status(200).json({ data: result });
+    } catch (error) {
+        console.error('Error fetching live latest points:', error);
+        return res.status(500).json({ error: error.message });
+    }
 });
 
 export default router;

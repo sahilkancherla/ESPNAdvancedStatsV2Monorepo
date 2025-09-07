@@ -1,8 +1,10 @@
 // context/FantasyDataContext.tsx
-import { getFantasyTeams, getFantasyPlayersWeeklyStats, getFantasyPlayersSeasonStats, getFantasyTeamsWeeklyStats, getFantasyTeamsSeasonStats, getFantasyDraftPicks } from "@/lib/fantasyData";
+import { getFantasyTeams, getFantasyPlayersWeeklyStats, getFantasyPlayersSeasonStats, getFantasyTeamsWeeklyStats, getFantasyTeamsSeasonStats, getFantasyDraftPicks, getFantasyCurrentRoster } from "@/lib/fantasyData";
 import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react"; 
 import { useLeagueTeamData } from "./LeagueTeamDataContext";
 import { FantasyTeam, FantasyPlayerWeeklyStats, FantasyPlayerSeasonStats, FantasyTeamWeeklyStats, FantasyTeamSeasonStats, FantasyDraftPick } from "@/lib/interfaces";
+import { useNFLData } from "./NFLDataContext";
+import { NFLPlayer } from "@/lib/interfaces";
 
 type FantasyData = {
   fantasyTeams: FantasyTeam[];
@@ -11,6 +13,7 @@ type FantasyData = {
   fantasyTeamsWeeklyStats: FantasyTeamWeeklyStats[];
   fantasyTeamsSeasonStats: FantasyTeamSeasonStats[];
   fantasyDraftPicks: FantasyDraftPick[];
+  fantasyCurrentRoster: NFLPlayer[];
   isLoading: boolean;
   refetchData: () => void;
 };
@@ -19,7 +22,8 @@ const FantasyDataContext = createContext<FantasyData | undefined>(undefined);
 
 export function FantasyDataProvider({ year, children }: { year: number | null, children: ReactNode }) {
 
-  const { selectedLeagueId } = useLeagueTeamData();
+  const { selectedLeagueId, myTeamId } = useLeagueTeamData();
+  const { nflPlayers } = useNFLData();
     
   console.log("FantasyDataProvider component executing", { selectedLeagueId, year });
 
@@ -30,11 +34,12 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
     fantasyTeamsWeeklyStats: [],
     fantasyTeamsSeasonStats: [],
     fantasyDraftPicks: [],
+    fantasyCurrentRoster: [],
     isLoading: true,
     refetchData: () => {}
   });
 
-  const fetchAll = useCallback(async (leagueId: string, currentYear: number) => {
+  const fetchAll = useCallback(async (leagueId: string, currentYear: number, teamId: string) => {
     console.log("Fetching fantasy data for league:", leagueId, "year:", year);
     setData(prev => ({ ...prev, isLoading: true }));
     
@@ -45,14 +50,16 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
         fantasyPlayersSeasonStats,
         fantasyTeamsWeeklyStats,
         fantasyTeamsSeasonStats,
-        fantasyDraftPicks
+        fantasyDraftPicks,
+        fantasyCurrentRoster
       ] = await Promise.all([
         getFantasyTeams(leagueId),
         getFantasyPlayersWeeklyStats(leagueId, currentYear),
         getFantasyPlayersSeasonStats(leagueId, currentYear),
         getFantasyTeamsWeeklyStats(leagueId, currentYear),
         getFantasyTeamsSeasonStats(leagueId, currentYear),
-        getFantasyDraftPicks(leagueId, currentYear)
+        getFantasyDraftPicks(leagueId, currentYear),
+        getFantasyCurrentRoster(teamId, currentYear)
       ]);
 
       const cleaned_fantasy_teams = [];
@@ -151,6 +158,15 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
         });
       }
 
+      const cleaned_fantasy_current_roster = [];
+      for (const currentRoster of fantasyCurrentRoster.data) {
+        const player = nflPlayers.find(player => player.id === currentRoster.player_id);
+
+        if (player) {
+          cleaned_fantasy_current_roster.push(player);
+        }
+      }
+
       const newData = {
         fantasyTeams: cleaned_fantasy_teams,
         fantasyPlayersWeeklyStats: cleaned_fantasy_players_weekly_stats,
@@ -158,6 +174,7 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
         fantasyTeamsWeeklyStats: cleaned_fantasy_teams_weekly_stats,
         fantasyTeamsSeasonStats: cleaned_fantasy_teams_season_stats,
         fantasyDraftPicks: cleaned_fantasy_draft_picks,
+        fantasyCurrentRoster: cleaned_fantasy_current_roster,
         isLoading: false,
         refetchData: () => {}
       };
@@ -173,10 +190,10 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
 
   // Create refetch function
   const refetchData = useCallback(() => {
-    if (selectedLeagueId && year) {
-      fetchAll(selectedLeagueId, year);
+    if (selectedLeagueId && myTeamId && year) {
+      fetchAll(selectedLeagueId, year, myTeamId);
     }
-  }, [selectedLeagueId, year, fetchAll]);
+  }, [selectedLeagueId, myTeamId, year, fetchAll]);
 
   // Update the data with the refetch function
   useEffect(() => {
@@ -187,8 +204,8 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
   useEffect(() => {
     console.log("useEffect running with:", { selectedLeagueId, year });
 
-    if (selectedLeagueId && year) {
-      fetchAll(selectedLeagueId, year);
+    if (selectedLeagueId && myTeamId && year) {
+      fetchAll(selectedLeagueId, year, myTeamId);
     } else {
       // Reset data when no league is selected
       setData({
@@ -198,11 +215,12 @@ export function FantasyDataProvider({ year, children }: { year: number | null, c
         fantasyTeamsWeeklyStats: [],
         fantasyTeamsSeasonStats: [],
         fantasyDraftPicks: [],
+        fantasyCurrentRoster: [],
         isLoading: false,
         refetchData: () => {}
       });
     }
-  }, [selectedLeagueId, year, fetchAll]);
+  }, [selectedLeagueId, myTeamId, year, fetchAll]);
 
   return <FantasyDataContext.Provider value={data}>{children}</FantasyDataContext.Provider>;
 }

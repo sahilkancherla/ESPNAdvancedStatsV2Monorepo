@@ -302,3 +302,11 @@ export interface NFLBigPlay {
     week: number
     year: number
 }
+
+export interface TimeWindow {
+    id: string
+    start_time: string
+    end_time: string
+    week: number
+    year: number
+}

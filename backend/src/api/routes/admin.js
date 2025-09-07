@@ -261,4 +261,126 @@ router.get('/getTimeWindows', async (req, res) => {
     return res.status(200).json({ data: data });
 });
 
+router.post('/addNewActiveGameTimeWindow', async (req, res) => {
+    const { startTime, endTime, week, year } = req.body;
+    
+    try {
+        // Insert new time window into Supabase
+        const { data, error } = await supabase
+            .from('admin_active_game_time_windows')
+            .insert([
+                {
+                    start_time: startTime,
+                    end_time: endTime,
+                    week: week,
+                    year: year
+                }
+            ])
+            .select();
+
+        if (error) {
+            throw new Error(`Supabase error: ${error.message}`);
+        }
+
+        return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+        console.error('Error adding active game time window:', error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/deleteActiveGameTimeWindow', async (req, res) => {
+    const { id } = req.body;
+    
+    try {
+        // Delete time window from Supabase
+        const { data, error } = await supabase
+            .from('admin_active_game_time_windows')
+            .delete()
+            .eq('id', id)
+            .select();
+
+        if (error) {
+            throw new Error(`Supabase error: ${error.message}`);
+        }
+
+        return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+        console.error('Error deleting active game time window:', error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+router.post('/updateActiveGameTimeWindow', async (req, res) => {
+    const { id, startTime, endTime, week, year } = req.body;
+    
+    try {
+        // Update time window in Supabase
+        const { data, error } = await supabase
+            .from('admin_active_game_time_windows')
+            .update({
+                start_time: startTime,
+                end_time: endTime,
+                week: week,
+                year: year
+            })
+            .eq('id', id)
+            .select();
+
+        if (error) {
+            throw new Error(`Supabase error: ${error.message}`);
+        }
+
+        return res.status(200).json({ success: true, data: data });
+    } catch (error) {
+        console.error('Error updating active game time window:', error);
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+router.get('/getActiveGameTimeWindows', async (req, res) => {
+    const { year } = req.query;
+    
+    const { data, error } = await supabase
+        .from('admin_active_game_time_windows')
+        .select('*')
+        .eq('year', year)
+        .order('end_time', { ascending: true });
+    
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    
+    return res.status(200).json({ data: data });
+});
+
+router.get('/isInsideActiveGameTimeWindow', async (req, res) => {
+    const { week, year } = req.query;
+    
+    const { data, error } = await supabase
+        .from('admin_active_game_time_windows')
+        .select('*')
+        .eq('week', week)
+        .eq('year', year);
+    
+    if (error) {
+        return res.status(500).json({ error: error.message });
+    }
+    
+    // Use Date objects for more reliable comparison
+    const currentTime = new Date(); // This is already in UTC internally
+    let isInsideWindow = false;
+    
+    if (data && data.length > 0) {
+        isInsideWindow = data.some(window => {
+            const startTime = new Date(window.start_time);
+            const endTime = new Date(window.end_time);
+            return currentTime >= startTime && currentTime <= endTime;
+        });
+    }
+    
+    return res.status(200).json({ isInsideWindow });
+});
+
+
 export default router;

@@ -43,3 +43,10 @@ export async function getFantasyDraftPicks(leagueId: string, year: number) {
   });
   return res.json();
 }
+
+export async function getFantasyCurrentRoster(teamId: string, year: number) {
+  const res = await fetch(`${API_URL}/league/getCurrentRoster?teamId=${teamId}&year=${year}`, {
+    cache: "no-store",
+  });
+  return res.json();
+}

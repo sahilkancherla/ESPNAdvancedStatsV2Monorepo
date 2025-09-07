@@ -8,6 +8,7 @@ import { Switch } from '@/components/ui/switch'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog'
 import { Loader2, Users, BarChart3, Activity } from 'lucide-react'
 import { TimeWindowManager } from './TimeWindowManager'
+import { ActiveGameTimeWindowManager } from './ActiveGameTimeWindowManager'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL
 
@@ -367,8 +368,11 @@ export function AdminContent() {
         </Card>
       </div>
 
-      {/* Time Window Manager */}
+      {/* Point Tracking Time Window Manager */}
       <TimeWindowManager />
+
+      {/* Active Game Time Window Manager */}
+      <ActiveGameTimeWindowManager />
 
       {/* Confirmation Dialog */}
       <AlertDialog open={confirmDialog.open} onOpenChange={(open) => setConfirmDialog(prev => ({ ...prev, open }))}>
